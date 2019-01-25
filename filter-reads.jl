@@ -35,14 +35,19 @@ function filter_files(df, kmers)
     end
 end
 
-### main
-file = "simulated_reads/sim_rep_info.txt"
-df = CSV.File(file, delim = "\t") |> DataFrame
+function filter_reads(DEBUG=false)
+	if DEBUG
+		println("Running filter_reads")
+	end
+	### main
+	file = "simulated_reads/sim_rep_info.txt"
+	df = CSV.File(file, delim = "\t") |> DataFrame
 
-kmers = Dict()
+	kmers = Dict()
 
-for kmer in eachline("diffkmers.txt")
-    kmers[kmer] = 1
+	for kmer in eachline("diffkmers.txt")
+		kmers[kmer] = 1
+	end
+
+	filter_files(df, kmers)
 end
-
-filter_files(df, kmers)

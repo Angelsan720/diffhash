@@ -1,9 +1,11 @@
+
+#__precompile__()
 using CSV
 using DataFrames
 using BioSequences
 using JLD
 
-function update_kmercount!(filename, kmers, pos)
+function update_kmercount!(filename, kmers, pos , df)
     # modifies kmers
     reader = FASTA.Reader(open(filename, "r"))
 
@@ -27,19 +29,33 @@ function count_kmers(df)
         println(sample_name)
         forward_name = "simulated_reads/" * sample_name * "_1.fasta"
         reverse_name = "simulated_reads/" * sample_name * "_2.fasta"
-        update_kmercount!(forward_name, kmers, rowi)
-        update_kmercount!(reverse_name, kmers, rowi)
+        update_kmercount!(forward_name, kmers, rowi , df)
+        update_kmercount!(reverse_name, kmers, rowi , df)
     end
     return kmers
 end
-##update_kmercount("reads.fasta", kmers, 1)
 
-### main
-file = "simulated_reads/sim_rep_info.txt"
-df = CSV.File(file, delim = "\t") |> DataFrame
+function diffhash(file , delimiter , DEBUG)
+	if DEBUG
+		println("Running Diffhash")
+	end
+	##update_kmercount("reads.fasta", kmers, 1)
 
-@show df
+	### main
+	
 
-kmers = count_kmers(df)
-@save "kmers.jld" kmers
-#@show kmers
+	df = CSV.File(file, delim = delimiter) |> DataFrame
+	if DEBUG
+		println("Reading Data")
+	end
+	
+
+	@show df
+
+	kmers = count_kmers(df)
+	@save "kmers.jld" kmers
+	#@show kmers
+	
+end
+
+#diffhash()
