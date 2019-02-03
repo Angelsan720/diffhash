@@ -61,6 +61,7 @@ function diffhash(file , delimiter , DEBUG)
 
 end
 
+
 dic = Dict{String,String}()
 dic["threads"]="1"
 dic["working_dir"]="."

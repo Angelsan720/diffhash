@@ -15,4 +15,8 @@ function defaults(a,b=4,x=5,y=6)
     return "$a $b and $x $y"
 end
 
-print(defaults(1))
+#print(defaults(1))
+
+#print(readdir(".git"))
+
+print(occursin("/","//"))

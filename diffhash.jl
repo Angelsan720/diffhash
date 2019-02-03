@@ -21,41 +21,69 @@ function update_kmercount!(filename, kmers, pos , df)
     close(reader)
 end
 
-function count_kmers(df)
+function count_kmers(df , datadir , double_ended)
     kmers = Dict()
+    files = readdir(datadir)
+    if double_ended
+        println("Double ended")
+    end
+    for row in 1:nrow(df)
+        sample_name = df[row,:rep_id]
+        work = []
+        for file in files
+            if occursin(sample_name, file)
+                append!(work , file)
+            end
+        for job in work
+            jobname = datadir + job
+            println(jobname)
+            update_kmercount!(jobname, kmers, row , df)#parralelizing tentative
+        end
 
-    for rowi in 1:nrow(df)
-        sample_name = df[rowi,:rep_id]
-        println(sample_name)
-        forward_name = "simulated_reads/" * sample_name * "_1.fasta"
-        reverse_name = "simulated_reads/" * sample_name * "_2.fasta"
-        update_kmercount!(forward_name, kmers, rowi , df)
-        update_kmercount!(reverse_name, kmers, rowi , df)
+
+
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            update_kmercount!(forward_name, kmers, row , df)
+            update_kmercount!(reverse_name, kmers, row , df)
+        end
+
+
     end
     return kmers
 end
 
-function diffhash(file , delimiter , DEBUG)
-	if DEBUG
-		println("Running Diffhash")
-	end
-	##update_kmercount("reads.fasta", kmers, 1)
 
-	### main
-	
-
-	df = CSV.File(file, delim = delimiter) |> DataFrame
-	if DEBUG
-		println("Reading Data")
-	end
-	
-
-	@show df
-
-	kmers = count_kmers(df)
-	@save "kmers.jld" kmers
-	#@show kmers
-	
+if DEBUG
+	println("Running Diffhash")
+end
+### main
+df = CSV.File(file, delim = delimiter)## |> DataFrame
+if DEBUG
+	println("Reading Data")
 end
 
-#diffhash()
+
+@show df
+kmers = count_kmers(df)
+@save "kmers.jld" kmers
+#@show kmers
+
+if DEBUG
+	println("Finished diffhash")
+end
