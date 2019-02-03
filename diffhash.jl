@@ -5,7 +5,7 @@ using DataFrames
 using BioSequences
 using JLD
 
-function update_kmercount!(filename, kmers, pos , df)#ask if this needs sprucing up
+function update_kmercount!(filename, kmers, pos , df)#ask what this does in detail
     # modifies kmers
     reader = FASTA.Reader(open(filename, "r"))
 
@@ -43,23 +43,38 @@ function count_kmers(df , datadir , double_ended)
     end
     return kmers
 end
+function showhash(kmers)
+	if DEBUG
+		println("Running showhash")
+	end
 
+	out = ""
+	for (key, counts) in pairs(kmers)
+		if length(counts) < sum(counts) # there's at least 1 kmer in every file
+			out = string(out ,"$key\t$(join(counts, "\t"))\n")
+		end
+	end
+	open("hashcounts.tsv" , "w") do file
+		write(file , out)
+	end
+
+	if DEBUG
+		println("Finished showhash")
+end
 
 if DEBUG
 	println("Running Diffhash")
 end
-### main
-df = CSV.File(file, delim = delimiter)## |> DataFrame
-if DEBUG
-	println("Reading Data")
-end
+df = CSV.File(file, delim = delimiter)
 
-
-@show df
 kmers = count_kmers(df)
-@save "kmers.jld" kmers
-#@show kmers
-
 if DEBUG
 	println("Finished diffhash")
+end
+if DEBUG
+	println("Finished showhash")
+end
+showhash(kmers)
+if DEBUG
+	println("Finished showhash")
 end
