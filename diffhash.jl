@@ -5,7 +5,7 @@ using DataFrames
 using BioSequences
 using JLD
 
-function update_kmercount!(filename, kmers, pos , df)
+function update_kmercount!(filename, kmers, pos , df)#ask if this needs sprucing up
     # modifies kmers
     reader = FASTA.Reader(open(filename, "r"))
 
@@ -39,30 +39,6 @@ function count_kmers(df , datadir , double_ended)
             println(jobname)
             update_kmercount!(jobname, kmers, row , df)#parralelizing tentative
         end
-
-
-
-    end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            update_kmercount!(forward_name, kmers, row , df)
-            update_kmercount!(reverse_name, kmers, row , df)
-        end
-
 
     end
     return kmers
