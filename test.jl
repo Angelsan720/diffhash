@@ -20,3 +20,4 @@ end
 #print(readdir(".git"))
 
 print(occursin("/","//"))
+print("abc"[2])
