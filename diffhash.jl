@@ -34,23 +34,6 @@ function count_kmers(df , datadir)
         println(job)
         update_kmercount!(job, kmers, row , df)#parralelizing tentative
     end
-    #if double_ended
-    #    println("Double ended")
-    #end
-    #for row in 1:nrow(df)
-    #    sample_name = df[row,:rep_id]
-    #    work = []
-    #    for file in files
-    #        if occursin(sample_name, file)
-    #            append!(work , file)
-    #        end
-    #    for job in work
-    #        jobname = datadir + job
-    #        println(jobname)
-    #        update_kmercount!(jobname, kmers, row , df)#parralelizing tentative
-    #
-    #
-    #end
 
     return kmers
 end
