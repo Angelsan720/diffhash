@@ -5,7 +5,7 @@ using DataFrames
 using BioSequences
 #using JLD
 
-function update_kmercount!(filename, kmers, pos , df)#ask what this does in detail
+function update_kmercount!(filename, kmers, pos , n)#ask what this does in detail
     # modifies kmers
     reader = FASTA.Reader(open(filename, "r"))
 
@@ -13,7 +13,7 @@ function update_kmercount!(filename, kmers, pos , df)#ask what this does in deta
         # Do something
         for (_, kmer) in each(DNAKmer{13}, sequence(record))
             cank = convert(String, canonical(kmer)) # store kmers as strings
-            oldcount = get!(kmers, cank, zeros(Int64, nrow(df)))
+            oldcount = get!(kmers, cank, zeros(Int64, n))
             kmers[cank][pos] = oldcount[pos] + 1
         end
     end
@@ -26,13 +26,14 @@ function joinpath(dir , file)
     return dir + "/" + file
 end
 
-function count_kmers(df , datadir)
+function count_kmers(datadir)
     kmers = Dict()
     files = readdir(datadir)
+    n = length(files)
     for file in files
         job = joinpath(datadir , file)
         println(job)
-        update_kmercount!(job, kmers, row , df)#parralelizing tentative
+        update_kmercount!(job, kmers, row , n)#parralelizing tentative
     end
 
     return kmers
@@ -61,7 +62,7 @@ if DEBUG
 end
 df = CSV.File(file, delim = delimiter)
 
-kmers = count_kmers(df , "simulated_reads")
+kmers = count_kmers("simulated_reads")
 if DEBUG
 	println("Finished diffhash")
 end
