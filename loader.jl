@@ -1,4 +1,4 @@
-function loadARGS!(dic)
+function loadARGS(dic)
     #now we add whatever arguments the user wants
     for line in ARGS
     	s = split(line , dic["arg_delimiter"])
