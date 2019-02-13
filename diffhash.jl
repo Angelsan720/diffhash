@@ -27,7 +27,7 @@ end
 #    return dir + "/" + file
 #end
 
-function count_kmers(datadir , DEBUG , VERBOSE)
+function count_kmers(df , datadir , DEBUG , VERBOSE)
     kmers = Dict()
     files = readdir(datadir)
     n = length(files)
@@ -41,6 +41,7 @@ function count_kmers(datadir , DEBUG , VERBOSE)
 
     return kmers
 end
+
 function showhash(kmers , DEBUG , VERBOSE , outfile)
 
 	if DEBUG
@@ -68,7 +69,7 @@ function showhash(kmers , DEBUG , VERBOSE , outfile)
 	end
 end
 
-dic = Dict("DEBUG"=>"false","datadir"=>"data","VERBOSE"=>"false","outfile"=>"hashcounts.tsv","arg_delimiter"=>"=")
+dic = Dict("DEBUG"=>"false","datadir"=>"data","VERBOSE"=>"false","outfile"=>"hashcounts.tsv","arg_delimiter"=>"=" , "out_delim"=>"\t" , "dataframe"=>"")
 dic = loadARGS(dic)
 
 DEBUG = dic["DEBUG"]=="true"
@@ -77,16 +78,20 @@ VERBOSE = dic["VERBOSE"]=="true"
 if DEBUG
 	println("Running Diffhash")
 end
-#df = CSV.File(file, delim = delimiter)
+df = CSV.File(dic["dataframe"], delim = delimiter)
 
 kmers = count_kmers(dic["datadir"] , DEBUG , VERBOSE)
 if DEBUG
 	println("Finished diffhash")
+
+
 end
 if DEBUG
-	println("Finished showhash")
+	println("Starting showhash")
 end
-showhash(kmers , DEBUG , VERBOSE , outfile))
+outfile = dic["outfile"]
+out_delim = dic["out_delim"]
+showhash(kmers , DEBUG , VERBOSE , outfile)
 if DEBUG
 	println("Finished showhash")
 end

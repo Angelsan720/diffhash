@@ -40,7 +40,7 @@ function filter_reads(DEBUG=false)
 		println("Running filter_reads")
 	end
 	### main
-	file = "simulated_reads/sim_rep_info.txt"
+	file = "sim_rep_info.txt"
 	df = CSV.File(file, delim = "\t") |> DataFrame
 
 	kmers = Dict()

@@ -1,5 +1,5 @@
 ## ------------------------------------------------------------------------
-sim_rep_info <- read.delim("simulated_reads/sim_rep_info.txt")
+sim_rep_info <- read.delim("sim_rep_info.txt")
 hashcounts <- read.delim("hashcounts.tsv", header=FALSE, row.names=1)
 
 ## ------------------------------------------------------------------------
