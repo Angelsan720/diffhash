@@ -19,5 +19,16 @@ end
 
 #print(readdir(".git"))
 
-print(occursin("/","//"))
-print("abc"[2])
+#print(occursin("/","//"))
+#print("abc"[2])
+
+#print(occursin("abc","a"))
+#import Pkg; Pkg.add("DataFrames")
+
+using CSV
+using DataFrames
+file = "sim_rep_info.txt"
+df = CSV.File(file, delim = "\t") |> DataFrame
+for row in df{
+	println(row.rep_id)
+	}

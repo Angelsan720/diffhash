@@ -8,7 +8,7 @@ using BioSequences
 
 function update_kmercount!(filename, kmers, pos, n)#ask what this does in detail
     # modifies kmers
-    reader = FASTA.Reader(open(filename, "r"))
+    reader = FASTA.Reader(open(filename, "r"))#add functionaily to read compressed files
 
     for record in reader
         # Do something
@@ -30,14 +30,22 @@ end
 function count_kmers(df , datadir , DEBUG , VERBOSE)
     kmers = Dict()
     files = readdir(datadir)
-    n = length(files)
-    for i in 1:length(files)
-        job = joinpath(datadir , files[i])
-	if VERBOSE
-	        println(job)
-	end
-        update_kmercount!(job, kmers, i , n)#parralelizing tentative
+    for rowi in 1:nrow(df)
+        for file in files
+            if occursin(df[rowi,:rep_id] , file)
+                update_kmercount!(file, kmers, rowi , nrow(df))
+            end
+        end
     end
+    #n = length(files)
+    #for i in 1:length(files)
+    #    job = joinpath(datadir , files[i])
+	#if VERBOSE
+	#        println(job)
+	#end
+    #    update_kmercount!(job, kmers, i , n)#parralelizing tentative
+    #end
+
 
     return kmers
 end
@@ -69,7 +77,14 @@ function showhash(kmers , DEBUG , VERBOSE , outfile)
 	end
 end
 
-dic = Dict("DEBUG"=>"false","datadir"=>"data","VERBOSE"=>"false","outfile"=>"hashcounts.tsv","arg_delimiter"=>"=" , "out_delim"=>"\t" , "dataframe"=>"")
+dic = Dict( "DEBUG"=>"false",
+            "datadir"=>"data",
+            "VERBOSE"=>"false",
+            "outfile"=>"hashcounts.tsv",
+            "arg_delimiter"=>"=",
+            "out_delim"=>"\t",
+            "frame_delimiter"=>"\t",
+            "dataframe"=>"")
 dic = loadARGS(dic)
 
 DEBUG = dic["DEBUG"]=="true"
@@ -78,14 +93,15 @@ VERBOSE = dic["VERBOSE"]=="true"
 if DEBUG
 	println("Running Diffhash")
 end
-df = CSV.File(dic["dataframe"], delim = delimiter)
 
-kmers = count_kmers(dic["datadir"] , DEBUG , VERBOSE)
+df = CSV.File(dic["dataframe"], delim = dic["frame_delimiter"]) |> DataFrame
+kmers = count_kmers(df , dic["datadir"] , DEBUG , VERBOSE)
 if DEBUG
 	println("Finished diffhash")
-
-
 end
+
+
+
 if DEBUG
 	println("Starting showhash")
 end
