@@ -9,7 +9,14 @@ using BioSequences
 function update_kmercount!(filename, kmers, pos, n)
     #ask what this does in detail
     # modifies kmers
-    reader = FASTA.Reader(open(filename, "r"))#add functionaily to read compressed files
+
+    if occursin(uppercase(sample_name) , "FASTQ")	
+        println("Reading FASTQ")
+        reader = FASTQ.Reader(open(filename, "r")) #add functionaily to read compressed files #Doesnt seem possible
+    else
+        println("Reading FASTA")
+        reader = FASTA.Reader(open(filename, "r"))
+    end
 
     for record in reader
         # Do something

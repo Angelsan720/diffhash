@@ -1,0 +1,21 @@
+rep_id	group	lib	lib_sizes
+0Hour_ATCACG_L002_001_R1.extract.fastq	1	1
+0Hour_ATCACG_L002_002_R1.extract.fastq	1	1
+0Hour_ATCACG_L002_003_R1.extract.fastq	1	1
+0Hour_ATCACG_L002_004_R1.extract.fastq	1	1
+0Hour_ATCACG_L002_005_R1.extract.fastq	1	1
+0Hour_ATCACG_L002_001_R2.extract.fastq	1	1
+0Hour_ATCACG_L002_002_R2.extract.fastq	1	1
+0Hour_ATCACG_L002_003_R2.extract.fastq	1	1
+0Hour_ATCACG_L002_004_R2.extract.fastq	1	1
+0Hour_ATCACG_L002_005_R2.extract.fastq	1	1
+6Hour_CGATGT_L002_001_R1.extract.fastq	2	1
+6Hour_CGATGT_L002_002_R1.extract.fastq	2	1
+6Hour_CGATGT_L002_003_R1.extract.fastq	2	1
+6Hour_CGATGT_L002_004_R1.extract.fastq	2	1
+6Hour_CGATGT_L002_005_R1.extract.fastq	2	1
+6Hour_CGATGT_L002_001_R2.extract.fastq	2	1
+6Hour_CGATGT_L002_002_R2.extract.fastq	2	1
+6Hour_CGATGT_L002_003_R2.extract.fastq	2	1
+6Hour_CGATGT_L002_004_R2.extract.fastq	2	1
+6Hour_CGATGT_L002_005_R2.extract.fastq	2	1
