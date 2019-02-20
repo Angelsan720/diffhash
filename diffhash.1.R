@@ -1,13 +1,16 @@
-## ----setup, include=FALSE------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE)
-
 ## ----install-------------------------------------------------------------
+if (!requireNamespace("knitr"))
+    install.packages("knitr")
 if (!requireNamespace("BiocManager"))
     install.packages("BiocManager")
 if (!requireNamespace("polyester"))
   BiocManager::install("polyester")
 if (!requireNamespace("edgeR"))
   BiocManager::install("edgeR")
+
+## ----setup, include=FALSE------------------------------------------------
+knitr::opts_chunk$set(echo = TRUE)
+
 
 ## ----fcmat---------------------------------------------------------------
 fold_changes = matrix(c(4,4,rep(1,18),1,1,4,4,rep(1,16)), nrow=20)
