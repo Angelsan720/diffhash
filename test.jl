@@ -29,6 +29,5 @@ using CSV
 using DataFrames
 file = "sim_rep_info.txt"
 df = CSV.File(file, delim = "\t") |> DataFrame
-for row in df{
-	println(row.rep_id)
-	}
+println(size(df, 1))
+println(df[1,:rep_id])

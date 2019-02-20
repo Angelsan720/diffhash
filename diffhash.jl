@@ -6,7 +6,8 @@ using DataFrames
 using BioSequences
 #using JLD
 
-function update_kmercount!(filename, kmers, pos, n)#ask what this does in detail
+function update_kmercount!(filename, kmers, pos, n)
+    #ask what this does in detail
     # modifies kmers
     reader = FASTA.Reader(open(filename, "r"))#add functionaily to read compressed files
 
@@ -21,30 +22,24 @@ function update_kmercount!(filename, kmers, pos, n)#ask what this does in detail
 
     close(reader)
 end
-#function joinpath(dir , file)
-#    if dir[len(dir)] == "/"
-#        return dir + files
-#    return dir + "/" + file
-#end
 
 function count_kmers(df , datadir , DEBUG , VERBOSE)
     kmers = Dict()
     files = readdir(datadir)
-    for rowi in 1:nrow(df)
+    for rowi in 1:size(df,1)
+        sample_name = df[rowi,:rep_id]
         for file in files
-            if occursin(df[rowi,:rep_id] , file)
-                update_kmercount!(file, kmers, rowi , nrow(df))
+            if occursin(sample_name , file)
+                samp = joinpath(datadir , file)
+
+                println(samp)
+		println(file)
+		println(datadir)
+		println(rowi)
+                update_kmercount!( samp , kmers, rowi , nrow(df))
             end
         end
     end
-    #n = length(files)
-    #for i in 1:length(files)
-    #    job = joinpath(datadir , files[i])
-	#if VERBOSE
-	#        println(job)
-	#end
-    #    update_kmercount!(job, kmers, i , n)#parralelizing tentative
-    #end
 
 
     return kmers
@@ -86,7 +81,7 @@ dic = Dict( "DEBUG"=>"false",
             "frame_delimiter"=>"\t",
             "dataframe"=>"")
 dic = loadARGS(dic)
-
+#######################################################################
 DEBUG = dic["DEBUG"]=="true"
 VERBOSE = dic["VERBOSE"]=="true"
 
@@ -95,13 +90,16 @@ if DEBUG
 end
 
 df = CSV.File(dic["dataframe"], delim = dic["frame_delimiter"]) |> DataFrame
+@show df
 kmers = count_kmers(df , dic["datadir"] , DEBUG , VERBOSE)
 if DEBUG
 	println("Finished diffhash")
 end
+#######################################################################
 
 
 
+#######################################################################
 if DEBUG
 	println("Starting showhash")
 end
@@ -111,3 +109,4 @@ showhash(kmers , DEBUG , VERBOSE , outfile)
 if DEBUG
 	println("Finished showhash")
 end
+#######################################################################
