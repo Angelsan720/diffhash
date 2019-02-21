@@ -1,3 +1,4 @@
+include("loader.jl")
 using BioSequences
 using CSV
 using DataFrames
@@ -35,19 +36,33 @@ function filter_files(df, kmers)
     end
 end
 
-function filter_reads(DEBUG=false)
+function filter_reads(datafile , delimiter , diffkmers)
 	if DEBUG
 		println("Running filter_reads")
 	end
 	### main
-	file = "sim_rep_info.txt"
-	df = CSV.File(file, delim = "\t") |> DataFrame
+
+	df = CSV.File(datafile, delim = delimiter) |> DataFrame
 
 	kmers = Dict()
 
-	for kmer in eachline("diffkmers.txt")
+	for kmer in eachline(diffkmers)
 		kmers[kmer] = 1
 	end
 
 	filter_files(df, kmers)
 end
+
+dic = Dict( "DEBUG"=>"false",
+            "datadir"=>"data",
+            "VERBOSE"=>"false",
+            "outfile"=>"hashcounts.tsv",
+            "arg_delimiter"=>"=",
+            "out_delim"=>"\t",
+            "frame_delimiter"=>"\t",
+            "dataframe"=>"",
+            "diffkmers"=>"diffkmers.txt" )
+
+dic = loadARGS(dic)
+
+filter_reads(dic["dataframe"] , dic["out_delim"] , dic["diffkmers"])

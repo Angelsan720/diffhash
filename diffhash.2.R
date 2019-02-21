@@ -1,9 +1,15 @@
+df <- read.delim("DataFrame")
+
+n <- nrow(df)
+
+print(n)
+
 ## ------------------------------------------------------------------------
 sim_rep_info <- read.delim("sim_rep_info.txt")
 hashcounts <- read.delim("hashcounts.tsv", header=FALSE, row.names=1)
 
 ## ------------------------------------------------------------------------
-design <- cbind(rep(1, 20), c(rep(0,10), rep(1,10)))
+design <- cbind(rep(1, n), c(rep(0,n/2), rep(1,n/2))) ## needs to be generalized
 colnames(design) <- c("C", "CvsT")
 
 ## ------------------------------------------------------------------------

@@ -10,11 +10,15 @@ function update_kmercount!(filename, kmers, pos, n)
     #ask what this does in detail
     # modifies kmers
 
-    if occursin(uppercase(sample_name) , "FASTQ")	
-        println("Reading FASTQ")
+    if occursin("FASTQ" , uppercase(filename))	
+        if VERBOSE || DEBUG
+            println("Reading FASTQ")
+        end
         reader = FASTQ.Reader(open(filename, "r")) #add functionaily to read compressed files #Doesnt seem possible
     else
-        println("Reading FASTA")
+        if VERBOSE || DEBUG
+            println("Reading FASTA")
+        end
         reader = FASTA.Reader(open(filename, "r"))
     end
 
@@ -30,7 +34,7 @@ function update_kmercount!(filename, kmers, pos, n)
     close(reader)
 end
 
-function count_kmers(df , datadir , DEBUG , VERBOSE)
+function count_kmers(df , datadir)
     kmers = Dict()
     files = readdir(datadir)
     for rowi in 1:size(df,1)
@@ -38,11 +42,9 @@ function count_kmers(df , datadir , DEBUG , VERBOSE)
         for file in files
             if occursin(sample_name , file)
                 samp = joinpath(datadir , file)
-
-                println(samp)
-		println(file)
-		println(datadir)
-		println(rowi)
+                if VERBOSE || DEBUG
+                    println(samp)
+                end
                 update_kmercount!( samp , kmers, rowi , nrow(df))
             end
         end
@@ -52,7 +54,7 @@ function count_kmers(df , datadir , DEBUG , VERBOSE)
     return kmers
 end
 
-function showhash(kmers , DEBUG , VERBOSE , outfile)
+function showhash(kmers , outfile)
 
 	if DEBUG
 		println("Running showhash")
@@ -98,7 +100,8 @@ end
 
 df = CSV.File(dic["dataframe"], delim = dic["frame_delimiter"]) |> DataFrame
 @show df
-kmers = count_kmers(df , dic["datadir"] , DEBUG , VERBOSE)
+kmers = count_kmers(df , dic["datadir"])
+
 if DEBUG
 	println("Finished diffhash")
 end
@@ -112,7 +115,7 @@ if DEBUG
 end
 outfile = dic["outfile"]
 out_delim = dic["out_delim"]
-showhash(kmers , DEBUG , VERBOSE , outfile)
+showhash(kmers , outfile)
 if DEBUG
 	println("Finished showhash")
 end
