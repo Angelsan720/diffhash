@@ -3,20 +3,20 @@ using BioSequences
 using CSV
 using DataFrames
 
-function filter_fasta(filename, kmers , condition)
+function filter_fasta(filename, kmers , allany)
 
     if occursin("FASTQ" , uppercase(filename))
         if VERBOSE || DEBUG
             println("I/O FASTQ")
         end
         reader = FASTQ.Reader(open(filename, "r"))
-        writer = FASTQ.Writer(open(filename + "filtered.FASTQ", "w" ))
+        writer = FASTQ.Writer(open(filename + ".filtered.FASTQ", "w" ))
     else
         if VERBOSE || DEBUG
             println("I/O FASTA")
         end
         reader = FASTA.Reader(open(filename, "r"))
-        writer = FASTA.Writer(open(filename + "filtered.FASTA", "w" ))
+        writer = FASTA.Writer(open(filename + ".filtered.FASTA", "w" ))
     end
     for record in reader
         # Do something
@@ -47,19 +47,6 @@ function filter_files(df , kmers , datadir , allany)
         filter_fasta(samp , kmers , allany)
     end
 end
-###############################################
-#function filter_files(df, kmers)
-#
-#    for rowi in 1:nrow(df)
-#        #sample_name = df[rowi,:rep_id]
-#        println(sample_name)
-#        forward_name = "simulated_reads/" * sample_name * "_1.fasta"
-#        forward_out = sample_name * "_1.filtered.fa"
-#        reverse_out = sample_name * "_2.filtered.fa"
-#        reverse_name = "simulated_reads/" * sample_name * "_2.fasta"
-#        filter_fasta(in, out, kmers)
-#    end
-#end
 
 function filter_reads(datafile , delimiter , diffkmers ,datadir, allany)
 	if DEBUG
@@ -78,21 +65,18 @@ function filter_reads(datafile , delimiter , diffkmers ,datadir, allany)
 	filter_files(df , kmers , datadir , allany)
 end
 
-dic = Dict( "DEBUG"=>"false",
-            "datadir"=>"data",
+dic = Dict( "arg_delimiter"=>"=",
+            "DEBUG"=>"false",
             "VERBOSE"=>"false",
-            "outfile"=>"hashcounts.tsv",
-            "arg_delimiter"=>"=",
-            "out_delim"=>"\t",
-            "frame_delimiter"=>"\t",
             "dataframe"=>"",
-            "datadir"=>"",
+            "frame_delimiter"=>"\t",
+            "datadir"=>"data",
             "diffkmers"=>"diffkmers.txt",
-            "allany"=>"true")
+            "all"=>"all")
 
 dic = loadARGS(dic)
 
 DEBUG = dic["DEBUG"]=="true"
 VERBOSE = dic["VERBOSE"]=="true"
 
-filter_reads(dic["dataframe"] , dic["out_delim"] , dic["diffkmers"] , dic["datadir"],dic["allany"]=="all")
+filter_reads(dic["dataframe"] , dic["frame_delimiter"] , dic["diffkmers"] , dic["datadir"],dic["all"]=="all")
