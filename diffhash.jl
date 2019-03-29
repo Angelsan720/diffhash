@@ -17,9 +17,6 @@ function count_kmers(df , datadir)
         for file in files
             if occursin(sample_name , file)
                 samp = joinpath(datadir , file)
-                if VERBOSE || DEBUG
-                    println(samp)
-                end
                 update_kmercount!( samp , kmers, rowi , nrow(df))
             end
         end

@@ -1,7 +1,7 @@
 function loadARGS(dic)
     #now we add whatever arguments the user wants
     for line in ARGS
-    	s = split(line , dic["arg_delimiter"])
+    	s = split(line , dic["ArgDelimiter"])
     	if (length(s)==2)
     		try
     			dic[s[1]]=s[2] #as a computer science student I find arrays not starting at zero blasphemous
