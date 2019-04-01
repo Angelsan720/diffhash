@@ -3,14 +3,14 @@ using BioSequences
 using CSV
 using DataFrames
 
-function filter_fasta(filename, kmers , filter)
+function filter_file(filename, kmers , filter)
 
     if occursin("FASTQ" , uppercase(filename))
         reader = FASTQ.Reader(open(filename, "r"))
-        writer = FASTQ.Writer(open(filename + ".filtered.FASTQ", "w" ))
+        writer = FASTQ.Writer(open(filename * ".filtered.FASTQ", "w" ))
     else
         reader = FASTA.Reader(open(filename, "r"))
-        writer = FASTA.Writer(open(filename + ".filtered.FASTA", "w" ))
+        writer = FASTA.Writer(open(filename * ".filtered.FASTA", "w" ))
     end
     for record in reader
         # Do something
@@ -38,7 +38,7 @@ function filter_files(df , kmers , datadir , filter)
     files = readdir(datadir)
     for file in files
         samp = joinpath(datadir , file)
-        filter_fasta(samp , kmers , filter)
+        filter_file(samp , kmers , filter)
     end
 end
 

@@ -5,7 +5,7 @@ n <- nrow(df)
 print(n)
 
 ## ------------------------------------------------------------------------
-sim_rep_info <- read.delim("sim_rep_info.txt")
+sim_rep_info <- read.delim("DataFrame")
 hashcounts <- read.delim("hashcounts.tsv", header=FALSE, row.names=1)
 
 ## ------------------------------------------------------------------------
