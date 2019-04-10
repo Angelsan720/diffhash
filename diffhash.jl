@@ -9,7 +9,7 @@ using DataFrames
 using BioSequences
 #using JLD
 
-function count_kmers(df , datadir)
+function count_kmers(df , datadir , k)
     kmers = Dict()
     files = readdir(datadir)
     for rowi in 1:size(df,1)
@@ -17,7 +17,8 @@ function count_kmers(df , datadir)
         for file in files
             if occursin(sample_name , file)
                 samp = joinpath(datadir , file)
-                update_kmercount!( samp , kmers, rowi , nrow(df))
+		print(samp*"\n")
+                update_kmercount!( samp , kmers, rowi , nrow(df) , k)
             end
         end
     end
@@ -26,7 +27,7 @@ function count_kmers(df , datadir)
     return kmers
 end
 
-function update_kmercount!(filename, kmers, pos, n)
+function update_kmercount!(filename, kmers, pos, n , k)
     #ask what this does in detail
     # modifies kmers
 
@@ -38,7 +39,7 @@ function update_kmercount!(filename, kmers, pos, n)
 
     for record in reader
         # Do something
-        for (_, kmer) in each(DNAKmer{13}, sequence(record))
+        for (_, kmer) in each(DNAKmer{k}, sequence(record))
             cank = convert(String, canonical(kmer)) # store kmers as strings
             oldcount = get!(kmers, cank, zeros(Int64, n))
             kmers[cank][pos] = oldcount[pos] + 1
@@ -60,15 +61,17 @@ function showhash(kmers , outfile)
 	end
 end
 
-dic = Dict( "ArgDelimiter"=>"=",
-            "DataDir"=>"",
-            "FrameDelimiter"=>"\t",
-            "DataFrame"=>"DataFrame",
-            "OutFile"=>"diff.kmers")
+dic = Dict(	"ArgDelimiter"=>"=",
+		"DataDir"=>"",
+		"FrameDelimiter"=>"\t",
+		"DataFrame"=>"DataFrame",
+		"OutFile"=>"diff.kmers",
+		"k"=>"13"
+	)
 
 dic = loadARGS(dic)
 df = CSV.File(dic["DataFrame"], delim = dic["FrameDelimiter"]) |> DataFrame
 @show df
-kmers = count_kmers(df , dic["DataDir"])
+kmers = count_kmers(df , dic["DataDir"] , parse(Int64 , dic["k"]))
 outfile = dic["OutFile"]
 showhash(kmers , outfile)

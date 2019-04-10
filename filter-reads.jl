@@ -5,6 +5,7 @@ using DataFrames
 
 function filter_file(filename, kmers , filter)
 
+    print(filename * "\n")
     if occursin("FASTQ" , uppercase(filename))
         reader = FASTQ.Reader(open(filename, "r"))
         writer = FASTQ.Writer(open(filename * ".filtered.FASTQ", "w" ))
