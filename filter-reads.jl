@@ -3,15 +3,15 @@ using BioSequences
 using CSV
 using DataFrames
 
-function filter_file(filename, kmers , filter)
+function filter_file(filename, kmers , filter , OutDir)
 
     print(filename * "\n")
     if occursin("FASTQ" , uppercase(filename))
         reader = FASTQ.Reader(open(filename, "r"))
-        writer = FASTQ.Writer(open(filename * ".filtered.FASTQ", "w" ))
+        writer = FASTQ.Writer(open(joinpath(OutDir , filename) * ".filtered.FASTQ", "w" ))
     else
         reader = FASTA.Reader(open(filename, "r"))
-        writer = FASTA.Writer(open(filename * ".filtered.FASTA", "w" ))
+        writer = FASTA.Writer(open(joinpath(OutDir , filename) * ".filtered.FASTA", "w" ))
     end
     for record in reader
         # Do something
@@ -35,15 +35,15 @@ function filter_file(filename, kmers , filter)
     close(writer)
 end
 
-function filter_files(df , kmers , datadir , filter)
+function filter_files(df , kmers , datadir , filter , OutDir)
     files = readdir(datadir)
     for file in files
         samp = joinpath(datadir , file)
-        filter_file(samp , kmers , filter)
+        filter_file(samp , kmers , filter , OutDir)
     end
 end
 
-function filter_reads(datafile , delimiter , diffkmers ,datadir, filter)
+function filter_reads(datafile , delimiter , diffkmers , datadir , filter , OutDir)
 	### main
 
 	df = CSV.File(datafile, delim = delimiter) |> DataFrame
@@ -54,16 +54,17 @@ function filter_reads(datafile , delimiter , diffkmers ,datadir, filter)
 		kmers[kmer] = 1
 	end
 
-	filter_files(df , kmers , datadir , filter)
+	filter_files(df , kmers , datadir , filter , OutDir)
 end
 
 dic = Dict( "ArgDelimiter"=>"=",
             "DataFrame"=>"",
             "FrameDelimiter"=>"\t",
             "DataDir"=>"",
+            "OutDir"=>"",
             "kmers"=>"diff.kmers",
             "Filter"=>"all")
 
 dic = loadARGS(dic)
 
-filter_reads(dic["DataFrame"] , dic["FrameDelimiter"] , dic["kmers"] , dic["DataDir"],dic["Filter"]=="all")
+filter_reads(dic["DataFrame"] , dic["FrameDelimiter"] , dic["kmers"] , dic["DataDir"] , dic["Filter"]=="all" , dic["OutDir"])
