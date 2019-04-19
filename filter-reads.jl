@@ -5,13 +5,17 @@ using DataFrames
 
 function filter_file(filename, kmers , filter , OutDir)
 
-    print(filename * "\n")
+    outfile = joinpath(OutDir , split(filename,"/")[end])
+    print(filename*"\n")
     if occursin("FASTQ" , uppercase(filename))
         reader = FASTQ.Reader(open(filename, "r"))
-        writer = FASTQ.Writer(open(joinpath(OutDir , filename) * ".filtered.FASTQ", "w" ))
-    else
+        writer = FASTQ.Writer(open(outfile * ".filtered.FASTQ", "w" ))
+    elseif occursin("FASTA" , uppercase(filename))
+
         reader = FASTA.Reader(open(filename, "r"))
-        writer = FASTA.Writer(open(joinpath(OutDir , filename) * ".filtered.FASTA", "w" ))
+        writer = FASTA.Writer(open(outfile * ".filtered.FASTA", "w" ))
+    else
+	return
     end
     for record in reader
         # Do something
