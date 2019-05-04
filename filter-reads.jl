@@ -3,17 +3,16 @@ using BioSequences
 using CSV
 using DataFrames
 
-function filter_file(filename, kmers , filter , OutDir)
+function filter_file(filename, kmers , filter)
 
-    outfile = joinpath(OutDir , split(filename,"/")[end])
     print(filename*"\n")
     if occursin("FASTQ" , uppercase(filename))
         reader = FASTQ.Reader(open(filename, "r"))
-        writer = FASTQ.Writer(open(outfile * ".filtered.FASTQ", "w" ))
+        writer = FASTQ.Writer(open(filename * ".filtered.FASTQ", "w" ))
     elseif occursin("FASTA" , uppercase(filename))
 
         reader = FASTA.Reader(open(filename, "r"))
-        writer = FASTA.Writer(open(outfile * ".filtered.FASTA", "w" ))
+        writer = FASTA.Writer(open(filename * ".filtered.FASTA", "w" ))
     else
 	return
     end
@@ -39,18 +38,18 @@ function filter_file(filename, kmers , filter , OutDir)
     close(writer)
 end
 
-function filter_files(df , kmers , datadir , filter , OutDir)
+function filter_files(kmers , datadir , filter)
+    print(datadir*"\n")
     files = readdir(datadir)
     for file in files
         samp = joinpath(datadir , file)
-        filter_file(samp , kmers , filter , OutDir)
+        filter_file(samp , kmers , filter)
     end
 end
 
-function filter_reads(datafile , delimiter , diffkmers , datadir , filter , OutDir)
+function filter_reads(diffkmers , datadir , filter)
 	### main
 
-	df = CSV.File(datafile, delim = delimiter) |> DataFrame
 
 	kmers = Dict()
 
@@ -58,17 +57,14 @@ function filter_reads(datafile , delimiter , diffkmers , datadir , filter , OutD
 		kmers[kmer] = 1
 	end
 
-	filter_files(df , kmers , datadir , filter , OutDir)
+	filter_files(kmers , datadir , filter)
 end
 
 dic = Dict( "ArgDelimiter"=>"=",
-            "DataFrame"=>"",
-            "FrameDelimiter"=>"\t",
-            "DataDir"=>"",
-            "OutDir"=>"",
-            "kmers"=>"diff.kmers",
+            "DataDir"=>"/data/angelsan720/projecto2/files/diffhash/",
+            "kmers"=>"diffkmers.txt",
             "Filter"=>"all")
 
-dic = loadARGS(dic)
-
-filter_reads(dic["DataFrame"] , dic["FrameDelimiter"] , dic["kmers"] , dic["DataDir"] , dic["Filter"]=="all" , dic["OutDir"])
+#dic = loadARGS(dic)
+print(dic)
+filter_reads(dic["kmers"] , dic["DataDir"] , dic["Filter"]=="all")

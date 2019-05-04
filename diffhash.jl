@@ -62,14 +62,15 @@ function showhash(kmers , outfile)
 end
 
 dic = Dict(	"ArgDelimiter"=>"=",
-		"DataDir"=>"",
+		"DataDir"=>"/data/angelsan720/projecto2/files/diffhash/",
 		"FrameDelimiter"=>"\t",
 		"DataFrame"=>"DataFrame",
 		"OutFile"=>"diff.kmers",
-		"k"=>"13"
+		"k"=>"25"
 	)
 
 dic = loadARGS(dic)
+print(dic)
 df = CSV.File(dic["DataFrame"], delim = dic["FrameDelimiter"]) |> DataFrame
 @show df
 kmers = count_kmers(df , dic["DataDir"] , parse(Int64 , dic["k"]))
